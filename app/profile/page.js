@@ -5,7 +5,7 @@ import API from "../../lib/api";
 import Protected from "../../components/Protected";
 import toast from "react-hot-toast";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Profile() {
   const [user, setUser] = useState(null);

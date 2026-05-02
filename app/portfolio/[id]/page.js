@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import AnimatedPage from "../../../components/AnimatedPage";
 import toast from "react-hot-toast";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ProfileDetail() {
   const { id } = useParams();
