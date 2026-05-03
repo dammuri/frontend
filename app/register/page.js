@@ -34,7 +34,7 @@ export default function Register() {
 
     } catch (err) {
       console.error(err);
-      toast.error(err?.response?.data?.error || "Registration failed");
+      toast.error(err?.response?.data?.error || "registrasi gagal, email atau username terdaftar");
     } finally {
       setLoading(false);
     }
