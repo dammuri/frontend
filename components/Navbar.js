@@ -9,7 +9,7 @@ export default function Navbar() {
     const token = localStorage.getItem("token");
 
     if (token) {
-      fetch("process.env.NEXT_PUBLIC_API_URL", {
+      fetch(process.env.NEXT_PUBLIC_API_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
