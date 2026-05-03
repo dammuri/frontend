@@ -17,17 +17,23 @@ export default function Navbar() {
     if (!token) return;
 
     API.get("/users/me")
-      .then((res) => setUser(res.data))
-      .catch(() => localStorage.removeItem("token"));
+      .then((res) => {
+        console.log("USER:", res.data);
+        setUser(res.data);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+      });
   }, []);
 
-  // 🔥 close dropdown when click outside
+  // close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (!dropdownRef.current?.contains(e.target)) {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
@@ -46,8 +52,9 @@ export default function Navbar() {
           Portfolio
         </Link>
 
-        {/* NAV LINKS */}
+        {/* NAV */}
         <div className="flex items-center gap-6">
+
           <Link href="/">Home</Link>
           <Link href="/portfolio">Portfolio</Link>
 
@@ -75,11 +82,11 @@ export default function Navbar() {
 
               {/* DROPDOWN */}
               {open && (
-                <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden animate-fade-in">
+                <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
 
                   <Link
                     href="/profile"
-                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     👤 Profile
                   </Link>
@@ -87,7 +94,7 @@ export default function Navbar() {
                   {user.is_admin && (
                     <Link
                       href="/admin"
-                      className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       ⚙️ Admin Panel
                     </Link>
@@ -95,18 +102,26 @@ export default function Navbar() {
 
                   <button
                     onClick={logout}
-                    className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     🚪 Logout
                   </button>
 
                 </div>
               )}
-
             </div>
           ) : (
-            <Link href="/login">Login</Link>
+            <>
+              <Link href="/login">Login</Link>
+              <Link
+                href="/register"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Register
+              </Link>
+            </>
           )}
+
         </div>
 
       </div>
