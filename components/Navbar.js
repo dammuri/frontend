@@ -12,6 +12,7 @@ export default function Navbar() {
       fetch(process.env.NEXT_PUBLIC_API_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
         },
       })
         .then(res => res.json())
