@@ -33,7 +33,9 @@ export default function Footer() {
           <h3 className="font-semibold text-white mb-3">Contact</h3>
           <ul className="space-y-2 text-sm">
             <li>Email: contact@portfolio.com</li>
-            <li>Phone: +62 812-3456-7890</li>
+            <li>Email: contact@portfolio.com</li>
+            <li>Email: contact@portfolio.com</li>
+            <li>Email: contact@portfolio.com</li>
             <li>Jakarta, Indonesia</li>
           </ul>
         </div>

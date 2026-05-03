@@ -4,7 +4,7 @@ import { useState } from "react";
 import API from "../../lib/api";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
@@ -28,7 +28,7 @@ export default function Login() {
         <input
           placeholder="Email"
           className="w-full border p-3 mb-4 rounded-lg focus:ring-2 focus:ring-blue-400"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
