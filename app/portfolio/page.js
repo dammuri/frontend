@@ -56,10 +56,12 @@ export default function Portfolio() {
               >
                 <img
                   src={
-                    u.image
-                      ? `${BASE_URL}/${u.image}`
-                      : "https://via.placeholder.com/300"
+                    u.image ||
+                    `https://ui-avatars.com/api/?name=${u.username}&background=random`
                   }
+                  onError={(e) => {
+                    e.target.src = `https://ui-avatars.com/api/?name=${u.username}`;
+                  }}
                   className="h-48 w-full object-cover"
                 />
 

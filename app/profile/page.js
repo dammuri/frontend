@@ -88,12 +88,14 @@ export default function Profile() {
 
           <img
             src={
-              user.image
-                ? `${BASE_URL}/${user.image}`
-                : "https://via.placeholder.com/150"
+                user?.image ||
+                `https://ui-avatars.com/api/?name=${user?.username}`
             }
-            className="w-24 h-24 rounded-full mx-auto mb-4"
-          />
+            onError={(e) => {
+                e.target.src = `https://ui-avatars.com/api/?name=${user?.username}`;
+            }}
+            className="w-32 h-32 rounded-full object-cover mx-auto"
+            />
 
           <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
