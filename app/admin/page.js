@@ -18,6 +18,7 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState(null);
   const [editUsername, setEditUsername] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [editRole, setEditRole] = useState(false);
 
   // LOAD USERS
   const loadUsers = () => {
@@ -70,11 +71,13 @@ export default function AdminPage() {
     }
   };
 
-  // TOGGLE ROLE
+  // TOGGLE ROLE QUICK BUTTON
   const toggleRole = async (user) => {
     try {
-      await API.put(`/users/${user.id}/role`, null, {
-        params: { is_admin: !user.is_admin },
+      await API.put(`/users/${user.id}`, {
+        username: user.username,
+        email: user.email,
+        is_admin: !user.is_admin,
       });
 
       loadUsers();
@@ -88,6 +91,7 @@ export default function AdminPage() {
     setEditingId(u.id);
     setEditUsername(u.username);
     setEditEmail(u.email);
+    setEditRole(u.is_admin);
   };
 
   // CANCEL EDIT
@@ -101,6 +105,7 @@ export default function AdminPage() {
       await API.put(`/users/${id}`, {
         username: editUsername,
         email: editEmail,
+        is_admin: editRole,
       });
 
       setEditingId(null);
@@ -119,20 +124,20 @@ export default function AdminPage() {
 
         <div className="grid md:grid-cols-2 gap-8">
 
-          {/* LEFT: CREATE USER */}
+          {/* ================= CREATE USER ================= */}
           <div className="bg-white p-6 rounded-2xl shadow-md">
             <h2 className="text-xl font-semibold mb-4">Add User</h2>
 
             <input
               placeholder="Username"
-              className="w-full border p-3 mb-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 mb-3 rounded-lg"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
 
             <input
               placeholder="Email"
-              className="w-full border p-3 mb-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 mb-3 rounded-lg"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -140,7 +145,7 @@ export default function AdminPage() {
             <input
               type="password"
               placeholder="Password"
-              className="w-full border p-3 mb-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 mb-3 rounded-lg"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -156,13 +161,13 @@ export default function AdminPage() {
 
             <button
               onClick={createUser}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
             >
               Create User
             </button>
           </div>
 
-          {/* RIGHT: USER LIST */}
+          {/* ================= USER LIST ================= */}
           <div className="bg-white p-6 rounded-2xl shadow-md">
             <h2 className="text-xl font-semibold mb-4">Users</h2>
 
@@ -170,7 +175,7 @@ export default function AdminPage() {
               {users.map((u) => (
                 <div
                   key={u.id}
-                  className="border p-3 rounded-lg hover:bg-gray-50 transition"
+                  className="border p-3 rounded-lg hover:bg-gray-50"
                 >
 
                   {editingId === u.id ? (
@@ -186,6 +191,16 @@ export default function AdminPage() {
                         value={editEmail}
                         onChange={(e) => setEditEmail(e.target.value)}
                       />
+
+                      {/* ROLE EDIT */}
+                      <label className="flex items-center gap-2 mb-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={editRole}
+                          onChange={() => setEditRole(!editRole)}
+                        />
+                        Admin Role
+                      </label>
 
                       <div className="flex gap-2">
                         <button
@@ -205,6 +220,7 @@ export default function AdminPage() {
                     </>
                   ) : (
                     <div className="flex justify-between items-center">
+
                       <div>
                         <p className="font-medium">{u.username}</p>
                         <p className="text-sm text-gray-500">{u.email}</p>
@@ -212,7 +228,7 @@ export default function AdminPage() {
 
                       <div className="flex items-center gap-2">
 
-                        {/* ROLE */}
+                        {/* ROLE BADGE */}
                         <button
                           onClick={() => toggleRole(u)}
                           className={`text-xs px-3 py-1 rounded-full ${
@@ -241,6 +257,7 @@ export default function AdminPage() {
                         </button>
 
                       </div>
+
                     </div>
                   )}
 
