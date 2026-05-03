@@ -108,7 +108,7 @@ export default function Profile() {
           <input
             className="w-full border p-2 mt-3"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)} disabled
           />
 
           <textarea
