@@ -9,7 +9,7 @@ export default function Login() {
 
   const login = async () => {
     try {
-      const res = await API.post("/users/login", { username, password });
+      const res = await API.post("/users/login", { email, password });
       localStorage.setItem("token", res.data.access_token);
       window.location.href = "/profile";
     } catch {
