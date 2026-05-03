@@ -54,14 +54,7 @@ export default function Register() {
         {/* USERNAME */}
         <input
           type="text"
-          placeholder="Username"
-          className="w-full mb-3 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-        />
-    {/* name */}
-        <input
-          type="text"
-          placeholder="nama"
+          placeholder="Nama Lengkap"
           className="w-full mb-3 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           onChange={(e) => setForm({ ...form, username: e.target.value })}
         />
