@@ -1,28 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useUser from "../lib/useUser";
 
 export default function Protected({ children, adminOnly = false }) {
   const user = useUser();
   const router = useRouter();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // ❌ Not logged in
-    if (user === null) {
+    // ⏳ still loading user → do nothing
+    if (user === undefined) return;
+
+    // ❌ not logged in
+    if (!user) {
       router.push("/login");
       return;
     }
 
-    // ❌ Not admin but trying admin page
-    if (adminOnly && user && !user.is_admin) {
+    // ❌ not admin
+    if (adminOnly && !user.is_admin) {
       router.push("/");
+      return;
     }
+
+    // ✅ safe to render
+    setReady(true);
   }, [user, adminOnly]);
 
-  // ⏳ Loading state
-  if (user === undefined) {
+  // ⏳ still checking
+  if (!ready) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
         <p className="text-gray-500 animate-pulse">Loading...</p>
