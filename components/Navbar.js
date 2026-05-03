@@ -58,14 +58,16 @@ export default function Navbar() {
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-2"
               >
-                <img
-                  src={
-                    user.image
-                      ? `${BASE_URL}/${user.image}`
-                      : "https://i.pravatar.cc/40"
-                  }
-                  className="w-9 h-9 rounded-full object-cover"
-                />
+                 <img
+                    src={
+                        user?.image ||
+                        "https://i.pravatar.cc/40"
+                    }
+                    onError={(e) => {
+                        e.target.src = "https://i.pravatar.cc/40";
+                    }}
+                    className="w-9 h-9 rounded-full object-cover"
+                    />
                 <span>{user.username}</span>
               </button>
 
