@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 🔥 use your existing file
 const getBg = () => {
-  return `${BASE_URL}/image/logoweb.png?ngrok-skip-browser-warning=true`;
+  return `${BASE_URL}/uploads/logoweb.png?ngrok-skip-browser-warning=true`;
 };
 
 export default function Home() {
