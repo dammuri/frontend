@@ -1,32 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import API from "../lib/api";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [mobile, setMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const profileRef = useRef();
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("user"));
-      setUser(stored);
-    } catch {}
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    API.get("/users/me")
+      .then((res) => setUser(res.data))
+      .catch(() => localStorage.removeItem("token"));
+  }, []);
+
+  // close profile dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (!profileRef.current?.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     window.location.href = "/";
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur border-b shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <nav className="fixed top-0 w-full backdrop-blur-md bg-white/70 dark:bg-gray-900/70 shadow z-50">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
 
         {/* LOGO */}
-        <Link href="/" className="text-blue-600 font-bold text-lg">
+        <Link href="/" className="font-bold text-blue-600 text-lg">
           Portfolio
         </Link>
 
@@ -36,29 +53,39 @@ export default function Navbar() {
           <Link href="/portfolio">Portfolio</Link>
 
           {user ? (
-            <div className="relative">
-              <div
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 cursor-pointer"
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center gap-2"
               >
-                <img
-                  src={
-                    user.image ||
-                    `https://ui-avatars.com/api/?name=${user.username}`
-                  }
-                  className="w-9 h-9 rounded-full object-cover"
-                />
-                <span className="text-sm">{user.username}</span>
-              </div>
+                 <img
+                    src={
+                        user?.image ||
+                        "https://i.pravatar.cc/40"
+                    }
+                    onError={(e) => {
+                        e.target.src = "https://i.pravatar.cc/40";
+                    }}
+                    className="w-9 h-9 rounded-full object-cover"
+                    />
+                <span>{user.username}</span>
+              </button>
 
-              {open && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow p-2">
-                  <Link href="/profile" className="block px-3 py-2 hover:bg-gray-100">
+              {profileOpen && (
+                <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow">
+                  <Link className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700" href="/profile">
                     Profile
                   </Link>
+
+                  {user.is_admin && (
+                    <Link className="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700" href="/admin">
+                      Admin
+                    </Link>
+                  )}
+
                   <button
                     onClick={logout}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-500"
+                    className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Logout
                   </button>
@@ -66,35 +93,58 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <Link href="/login">Login</Link>
+            <>
+              <Link href="/login">Login</Link>
+              <Link
+                href="/register"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+                Register
+              </Link>
+            </>
           )}
         </div>
 
         {/* MOBILE BUTTON */}
         <button
-          className="md:hidden text-xl"
-          onClick={() => setMobile(!mobile)}
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-2xl"
         >
           ☰
         </button>
       </div>
 
       {/* MOBILE MENU */}
-      {mobile && (
-        <div className="md:hidden bg-white border-t p-4 flex flex-col gap-3">
-          <Link href="/">Home</Link>
-          <Link href="/portfolio">Portfolio</Link>
+      {menuOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-900 px-4 pb-4 space-y-3 shadow">
+
+          <Link href="/" className="block">Home</Link>
+          <Link href="/portfolio" className="block">Portfolio</Link>
 
           {user ? (
             <>
-              <Link href="/profile">Profile</Link>
-              <button onClick={logout} className="text-red-500">
+              <Link href="/profile" className="block">Profile</Link>
+
+              {user.is_admin && (
+                <Link href="/admin" className="block">Admin</Link>
+              )}
+
+              <button
+                onClick={logout}
+                className="block text-red-500"
+              >
                 Logout
               </button>
             </>
           ) : (
-            <Link href="/login">Login</Link>
+            <>
+              <Link href="/login" className="block">Login</Link>
+              <Link href="/register" className="block text-blue-500 font-semibold">
+                Register
+              </Link>
+            </>
           )}
+
         </div>
       )}
     </nav>

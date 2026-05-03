@@ -1,20 +1,31 @@
 "use client";
 
 import "../styles/globals.css";
+import { Toaster } from "react-hot-toast";
+import { Inter } from "next/font/google";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 dark:bg-gray-900">
+      <body className={`${inter.className} bg-gray-100 dark:bg-gray-900`}>
 
-        {/* NAVBAR */}
-        <Navbar />
+        <div className="min-h-screen flex flex-col">
 
-        {/* MAIN CONTENT (fix overlap here) */}
-        <main className="pt-20 px-4 md:px-8">
-          {children}
-        </main>
+          <Navbar />
+
+          <main className="flex-1">
+            {children}
+          </main>
+
+          <Footer />
+
+        </div>
+
+        <Toaster position="top-right" />
 
       </body>
     </html>
