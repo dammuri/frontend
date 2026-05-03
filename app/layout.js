@@ -1,6 +1,6 @@
 "use client";
 
-import "./globals.css";
+import "../styles/globals.css";
 import Navbar from "../components/Navbar";
 
 export default function RootLayout({ children }) {
