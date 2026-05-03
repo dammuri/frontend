@@ -33,7 +33,7 @@ export default function Footer() {
           <h3 className="font-semibold text-white mb-3">Contact</h3>
           <ul className="space-y-2 text-sm">
             <li>kelompok4ptikb@gmail.com</li>
-            <li>Universitas Negeri Malang</li>
+            <li>Universitas Negeri Medan</li>
           </ul>
         </div>
 
