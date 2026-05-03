@@ -1,60 +1,71 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import API from "../lib/api";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (token) {
-      fetch(process.env.NEXT_PUBLIC_API_URL, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-        },
-      })
-        .then(res => res.json())
-        .then(data => setUser(data))
-        .catch(() => setUser(null));
+    if (!token) {
+      setLoading(false);
+      return;
     }
+
+    API.get("/users/me")
+      .then((res) => {
+        console.log("USER:", res.data); // 🔥 DEBUG
+        setUser(res.data);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login"; // force refresh
+    window.location.href = "/";
   };
 
   return (
-    <nav className="bg-white/70 backdrop-blur border-b sticky top-0 z-50">
-      <div className="container flex justify-between py-4">
+    <nav className="fixed top-0 w-full bg-white shadow z-50">
+      <div className="container mx-auto flex justify-between p-4">
 
-        <h1 className="font-bold text-blue-600">Portfolio</h1>
+        <Link href="/" className="font-bold text-blue-600">
+          Portfolio
+        </Link>
 
-        <div className="flex gap-4 items-center text-sm">
+        <div className="space-x-6">
+          <Link href="/">Home</Link>
+          <Link href="/portfolio">Portfolio</Link>
 
-          <a href="/">Home</a>
-          <a href="/portfolio">Portfolio</a>
-
-          {user ? (
+          {!loading && user ? (
             <>
-              <a href="/profile">Profile</a>
+              <Link href="/profile">Profile</Link>
 
-              {user.is_admin && <a href="/admin">Admin</a>}
+              {/* ✅ ADMIN BUTTON */}
+              {user.is_admin === true && (
+                <Link href="/admin" className="text-purple-600 font-semibold">
+                  Admin
+                </Link>
+              )}
 
-              <button
-                onClick={logout}
-                className="text-red-500"
-              >
+              <button onClick={logout} className="text-red-500">
                 Logout
               </button>
             </>
-          ) : (
-            <a href="/login">Login</a>
-          )}
-
+          ) : !loading ? (
+            <Link href="/login">Login</Link>
+          ) : null}
         </div>
+
       </div>
     </nav>
   );
