@@ -10,23 +10,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function Portfolio() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    API.get("/users/public")
-      .then((res) => {
-        console.log("FETCH USERS:", res.data);
-        setUsers(res.data || []);
-      })
-      .catch((err) => {
-        console.error("ERROR FETCH USERS:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    API.get("/users/public").then((res) => setUsers(res.data));
   }, []);
 
-  // 🔍 FILTER
+  // 🔥 FILTER LOGIC (regex-like behavior)
   const filteredUsers = users.filter((u) =>
     u.username?.toLowerCase().includes(search.toLowerCase())
   );
@@ -39,7 +28,7 @@ export default function Portfolio() {
           Members
         </h1>
 
-        {/* 🔍 SEARCH */}
+        {/* 🔍 SEARCH BAR */}
         <div className="flex justify-center mb-8">
           <input
             type="text"
@@ -51,44 +40,34 @@ export default function Portfolio() {
         </div>
 
         {/* RESULTS COUNT */}
-        {!loading && (
-          <p className="text-center text-sm text-gray-500 mb-6">
-            {filteredUsers.length} result(s)
-          </p>
-        )}
+        <p className="text-center text-sm text-gray-500 mb-6">
+          {filteredUsers.length} result(s)
+        </p>
 
-        {/* CONTENT */}
+        {/* USER CARDS */}
         <div className="grid md:grid-cols-3 gap-6">
 
-          {loading ? (
-            <p className="text-center col-span-3 text-gray-500">
-              Loading users...
-            </p>
-          ) : filteredUsers.length > 0 ? (
+          {filteredUsers.length > 0 ? (
             filteredUsers.map((u) => (
-              <Link key={u.id} href={`/portfolio/${u.id}`}>
-                <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow hover:shadow-xl hover:scale-[1.02] transition overflow-hidden cursor-pointer">
+              <Link
+                key={u.id}
+                href={`/portfolio/${u.id}`}
+                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow hover:shadow-xl hover:scale-[1.02] transition overflow-hidden"
+              >
+                <img
+                  src={
+                    u.image
+                      ? `${BASE_URL}/${u.image}`
+                      : "https://via.placeholder.com/300"
+                  }
+                  className="h-48 w-full object-cover"
+                />
 
-                  <img
-                    src={
-                      u.image
-                        ? `${BASE_URL}/${u.image}`
-                        : "https://via.placeholder.com/300"
-                    }
-                    className="h-48 w-full object-cover"
-                    alt={u.username}
-                  />
-
-                  <div className="p-4 text-center">
-                    <h2 className="font-semibold text-lg">
-                      {u.username}
-                    </h2>
-
-                    <p className="text-sm text-gray-500 line-clamp-2">
-                      {u.bio || "No description"}
-                    </p>
-                  </div>
-
+                <div className="p-4 text-center">
+                  <h2 className="font-semibold text-lg">{u.username}</h2>
+                  <p className="text-sm text-gray-500 line-clamp-2">
+                    {u.bio}
+                  </p>
                 </div>
               </Link>
             ))
