@@ -26,7 +26,7 @@ export default function Login() {
         </h2>
 
         <input
-          placeholder="Username"
+          placeholder="Email"
           className="w-full border p-3 mb-4 rounded-lg focus:ring-2 focus:ring-blue-400"
           onChange={(e) => setUsername(e.target.value)}
         />
