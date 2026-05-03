@@ -13,7 +13,7 @@ export default function ProfileDetail() {
 
   const [preview, setPreview] = useState(null);
 
-  // 🔥 EDIT STATE
+  // EDIT STATE
   const [editOpen, setEditOpen] = useState(false);
   const [editingCert, setEditingCert] = useState(null);
   const [title, setTitle] = useState("");
@@ -29,20 +29,15 @@ export default function ProfileDetail() {
       .catch(() => {});
   }, [id]);
 
-  // =========================
   // DELETE
-  // =========================
   const deleteCert = async (certId) => {
     if (!confirm("Delete this certificate?")) return;
 
     await API.delete(`/users/certificates/${certId}`);
-
     setCerts((prev) => prev.filter((c) => c.id !== certId));
   };
 
-  // =========================
   // OPEN EDIT
-  // =========================
   const openEdit = (cert) => {
     setEditingCert(cert);
     setTitle(cert.title || "");
@@ -51,9 +46,7 @@ export default function ProfileDetail() {
     setEditOpen(true);
   };
 
-  // =========================
   // SAVE EDIT
-  // =========================
   const saveEdit = async () => {
     const formData = new FormData();
     formData.append("title", title);
@@ -61,12 +54,8 @@ export default function ProfileDetail() {
     if (file) formData.append("file", file);
 
     try {
-      await API.put(
-        `/users/certificates/${editingCert.id}`,
-        formData
-      );
+      await API.put(`/users/certificates/${editingCert.id}`, formData);
 
-      // update UI instantly
       setCerts((prev) =>
         prev.map((c) =>
           c.id === editingCert.id
@@ -107,6 +96,26 @@ export default function ProfileDetail() {
         <p className="text-gray-500">{user.email}</p>
         <p className="mt-3">{user.bio}</p>
 
+        {/* ========================= */}
+        {/* 🔥 SKILLS (FIXED) */}
+        {/* ========================= */}
+        {user.skills && user.skills.trim() !== "" && (
+          <div className="mt-6">
+            <h3 className="font-semibold mb-2">Skills</h3>
+
+            <div className="flex flex-wrap justify-center gap-2">
+              {user.skills.split(",").map((s, i) => (
+                <span
+                  key={i}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-1 rounded-full text-sm shadow"
+                >
+                  {s.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* CERTIFICATES */}
@@ -114,7 +123,7 @@ export default function ProfileDetail() {
 
       <div className="grid md:grid-cols-3 gap-6">
         {certs.map((c) => (
-          <div key={c.id} className="bg-white rounded-xl shadow overflow-hidden">
+          <div key={c.id} className="bg-white rounded-xl shadow overflow-hidden hover:shadow-lg transition">
 
             <img
               src={c.image}
@@ -126,7 +135,7 @@ export default function ProfileDetail() {
               <p className="font-medium">{c.title}</p>
               <p className="text-sm text-gray-500">{c.year}</p>
 
-              {/* 🔥 OWNER ONLY */}
+              {/* OWNER ONLY */}
               {me && Number(me.id) === Number(user.id) && (
                 <div className="flex justify-center gap-4 mt-2 text-sm">
 
@@ -152,12 +161,9 @@ export default function ProfileDetail() {
         ))}
       </div>
 
-      {/* ========================= */}
       {/* EDIT MODAL */}
-      {/* ========================= */}
       {editOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-
           <div className="bg-white p-6 rounded-xl w-80">
 
             <h2 className="text-lg font-semibold mb-4">Edit Certificate</h2>
@@ -183,7 +189,6 @@ export default function ProfileDetail() {
             />
 
             <div className="flex justify-end gap-3">
-
               <button
                 onClick={() => setEditOpen(false)}
                 className="px-3 py-1 border rounded"
@@ -197,7 +202,6 @@ export default function ProfileDetail() {
               >
                 Save
               </button>
-
             </div>
 
           </div>

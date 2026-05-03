@@ -115,13 +115,14 @@ export default function Profile() {
             className="w-full border p-2 mt-3"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
+            placeholder="Description"
           />
 
           <input
             className="w-full border p-2 mt-3"
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
-            placeholder="React, Python"
+            placeholder="Skills"
           />
 
           <button
@@ -160,6 +161,7 @@ export default function Profile() {
             >
               Upload
             </button>
+            <h4>Please upload your image in .jpg or .png format.</h4>
           </div>
 
         </div>
